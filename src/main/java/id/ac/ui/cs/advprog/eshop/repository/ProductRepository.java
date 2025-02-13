@@ -17,13 +17,6 @@ public class ProductRepository {
         if (product.getProductId() == null || product.getProductId().isEmpty()) {
             product.setProductId(UUID.randomUUID().toString());
         }
-        productData.add(product);
-        return product;
-    }
-
-    public Iterator<Product> findAll() {
-        return productData.iterator();
-    }
 
     public Product findById(String productId) {
         return productData.stream()
