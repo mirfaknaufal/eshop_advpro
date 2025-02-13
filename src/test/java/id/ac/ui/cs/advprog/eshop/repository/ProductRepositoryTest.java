@@ -69,6 +69,4 @@ class ProductRepositoryTest {
 
         assertFalse(productIterator.hasNext());
     }
-
-
 }
