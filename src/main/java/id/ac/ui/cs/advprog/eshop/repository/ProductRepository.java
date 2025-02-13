@@ -17,6 +17,13 @@ public class ProductRepository {
         if (product.getProductId() == null || product.getProductId().isEmpty()) {
             product.setProductId(UUID.randomUUID().toString());
         }
+        productData.add(product);
+        return product;
+    }
+
+    public Iterator<Product> findAll() {
+        return productData.iterator();
+    }
 
     public Product findById(String productId) {
         return productData.stream()
@@ -34,5 +41,9 @@ public class ProductRepository {
             }
         }
         return null;
+    }
+
+    public void delete(String productId) {
+        productData.removeIf(product -> product.getProductId().equals(productId));
     }
 }
