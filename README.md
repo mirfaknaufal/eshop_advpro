@@ -67,4 +67,104 @@
 
 ---
 
+# Reflection 2
+### 1. Writing unit tests is an essential part of software development, and it can evoke a range of feelings depending on the complexity of the code and the testing framework being used. Initially, writing unit tests might feel tedious or time-consuming, especially when dealing with intricate logic or dependencies. However, as you become more familiar with testing frameworks (like JUnit, Mockito, etc.), the process becomes more intuitive and rewarding. Seeing your tests pass gives a sense of confidence in the correctness and reliability of your code.
+
+---
+### How Many Unit Tests Should Be Made for a Class?
+
+The number of unit tests for a class depends on several factors:
+1. **Functionality**: Each method in the class should ideally have at least one corresponding unit test. If a method has multiple logical branches (e.g., `if-else`, loops, exceptions), each branch should be tested separately.
+2. **Code Complexity**: More complex methods with higher cyclomatic complexity require more tests to cover all possible execution paths.
+3. **Edge Cases**: Tests should account for edge cases, invalid inputs, and boundary conditions.
+4. **Behavioral Scenarios**: For classes that implement business logic, tests should verify expected behavior under various scenarios, including both normal and exceptional cases.
+
+---
+
+### Ensuring That Unit Tests Are Sufficient
+
+To ensure that your unit tests are sufficient to verify your program, consider the following strategies:
+
+1. **Test Coverage Metrics**:
+  - Use tools like **JaCoCo**, **Cobertura**, or **SonarQube** to measure code coverage. These tools provide insights into how much of your code is exercised by your tests.
+  - Common coverage metrics include:
+    - **Line Coverage**: Percentage of lines executed during testing.
+    - **Branch Coverage**: Percentage of decision points (e.g., `if` statements) covered.
+    - **Method Coverage**: Percentage of methods invoked.
+    - **Class Coverage**: Percentage of classes instantiated.
+
+2. **Mutation Testing**:
+  - Mutation testing tools (e.g., **PITest**) introduce small changes ("mutations") to your code and check whether your tests detect these changes. This helps identify gaps in your test suite.
+
+3. **Boundary Value Analysis**:
+  - Test inputs at the boundaries of acceptable ranges (e.g., minimum, maximum, null values).
+
+4. **Integration and Functional Testing**:
+  - While unit tests focus on individual components, integration tests ensure that components work together correctly. Functional tests validate the system's behavior from an end-user perspective.
+
+5. **Review and Refactor**:
+  - Regularly review your tests to ensure they remain relevant as the code evolves.
+  - Refactor tests to improve readability and maintainability.
+
+### Does 100% Code Coverage Mean No Bugs?
+
+No, achieving **100% code coverage does not guarantee that your code is bug-free**. Here’s why:
+
+1. **Logical Errors**:
+  - Code coverage measures whether lines of code are executed, but it doesn’t verify whether the logic is correct. A test might execute a line of code but fail to detect incorrect behavior.
+
+2. **Edge Cases**:
+  - Even with full coverage, some edge cases might not be explicitly tested. For example, a test might cover a method but miss rare input combinations.
+
+3. **External Dependencies**:
+  - Code coverage doesn’t account for issues arising from external systems (e.g., databases, APIs). Mocking these dependencies in unit tests can mask potential problems.
+
+4. **Non-Functional Requirements**:
+  - Code coverage doesn’t address performance, security, usability, or scalability concerns.
+
+5. **Human Error**:
+  - Tests themselves can contain bugs or fail to assert the correct behavior.
+
+---
+
+### 2. 
+When creating a new functional test suite to verify the number of items in the product list, duplicating the structure of `CreateProductFunctionalTest` introduces several clean code issues:
+
+1. **Code Duplication**:
+    - Repeating setup logic (e.g., WebDriver initialization, base URL construction) violates the DRY principle, making the code harder to maintain.
+
+2. **Reduced Readability**:
+    - Repetitive boilerplate code obscures the unique functionality being tested, making the tests harder to understand.
+
+3. **Increased Maintenance Overhead**:
+    - Changes to shared logic (e.g., setup procedures) require updates in multiple places, increasing effort and risk of inconsistencies.
+
+4. **Violation of SRP**:
+    - Embedding setup logic in each test class blurs responsibilities, reducing clarity and modularity.
+
+---
+
+### Things that can improve the code
+
+1. **Extract Common Logic into a Base Class**:
+    - Centralize shared setup procedures in a `BaseFunctionalTest` class to avoid duplication.
+
+2. **Use Page Object Model (POM)**:
+    - Encapsulate page-specific interactions (e.g., product list verification) in separate classes for better readability and reusability.
+
+3. **Parameterize Tests**:
+    - Use tools like JUnit 5's `@ParameterizedTest` to test multiple scenarios without duplicating code.
+
+4. **Leverage Dependency Injection**:
+    - Inject shared dependencies (e.g., WebDriver) to decouple test logic from setup logic.
+
+---
+
+### Benefits of those improvements
+
+- Improved maintainability and scalability.
+- Enhanced readability by focusing on unique test behavior.
+- Adherence to clean code principles like DRY and SRP.
+
+By centralizing shared logic and adopting reusable patterns, the new test suite can remain clean, modular, and professional.
 </details>
