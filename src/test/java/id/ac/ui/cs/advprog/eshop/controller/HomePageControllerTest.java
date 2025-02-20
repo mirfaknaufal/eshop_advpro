@@ -15,6 +15,6 @@ class HomePageControllerTest {
 
         String viewName = controller.homePage();
 
-        assertEquals("HomePage.html", viewName, "The view name should be 'HomePage.html'");
+        assertEquals("HomePage", viewName, "The view name should be 'HomePage'");
     }
 }
