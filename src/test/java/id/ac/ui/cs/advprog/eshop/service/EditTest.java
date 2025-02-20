@@ -1,7 +1,7 @@
-package id.ac.ui.cs.advprog.eshop.repository;
+package id.ac.ui.cs.advprog.eshop.service;
 
 import id.ac.ui.cs.advprog.eshop.model.Product;
-import id.ac.ui.cs.advprog.eshop.service.ProductServiceImpl;
+import id.ac.ui.cs.advprog.eshop.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,7 +26,6 @@ class ProductServiceUpdateTest {
 
     @Test
     void testUpdate_ProductExists_SuccessfullyUpdated() {
-        // Arrange: Create an existing product and its updated version
         Product existingProduct = new Product();
         existingProduct.setProductId("1");
         existingProduct.setProductName("Laptop");
