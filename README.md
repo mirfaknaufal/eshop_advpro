@@ -1,4 +1,4 @@
-<details open>
+<details>
 <summary>Module 1</summary>
 
 # Reflection 1
@@ -167,4 +167,15 @@ When creating a new functional test suite to verify the number of items in the p
 - Adherence to clean code principles like DRY and SRP.
 
 By centralizing shared logic and adopting reusable patterns, the new test suite can remain clean, modular, and professional.
+</details>
+
+<details open>
+<summary>Module 2</summary>
+
+### 1. List the code quality issue(s) that you fixed during the exercise and explain your strategy on fixing them.
+PMD detected an unused import which was `org.springframework.web.bind.annotation.*`. This is a wildcard import, I changed it from it into a more explicit imports to improve code clarity and maintainability. Wildcard imports offers convenience, but they can lead to ambiguity and namespace pollution. In large projects with other contributors, although wildcard imports saves space, using a more explicit imports would make the code more readable and predictable. In conclusion, using wildcard imports may saves space but using explicit imports would make the more readable and more predictable.
+
+### 2. Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!
+The current CI/CD implementation partially meets the definition of Continuous Integration (CI) and Continuous Deployment (CD). The `ci.yml` workflow automates testing on every push and pull request, ensuring code changes are validated through unit tests, which aligns with CI principles. However, while the Dockerfile prepares the application for deployment by building and packaging it into a containerized environment, there is no explicit pipeline or automation for deploying the application to production or staging environments, which is essential for true CD. Additionally, workflows like `pmd.yml` and `scorecard.yml` focus on code quality and security but do not contribute directly to deployment automation.
+
 </details>
