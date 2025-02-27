@@ -48,7 +48,7 @@ class ProductControllerTest {
 
         String viewName = controller.createProductPost(product, model);
 
-        assertEquals("redirect:list", viewName);
+        assertEquals("redirect:/product/list", viewName);
         verify(service, times(1)).create(product);
     }
 
