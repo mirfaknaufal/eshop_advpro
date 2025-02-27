@@ -191,5 +191,10 @@ The current CI/CD implementation partially meets the definition of Continuous In
 - Dependency Inversion Principle: `CarController` depends on the CarService interface, not on a concrete implementation like `CarServiceImpl`.
 
 ### 2. Explain the advantages of applying SOLID principles to your project with examples.
+With SOLID principle, my code is a lot more readable for me and other people by applying SRP. For example, `CarController` is on its own, and when I read the file name, I instantly knew that 'CarController' is the controller for Car page. Before I applied SOLID, `CarController` was inside of `ProductController`, other people wouldn't know where my 'CarController' is if it stayed.
+With SOLID principle, improves robustness of my program. Adhering to SOLID principles reduces the likelihood of bugs and unexpected behavior. Not only that, following the principle makes debugging and spotting bugs a lot easier than ever. For example, following LSP ensures that subclasses behave consistently with their superclasses.
 
+### 3. Explain the disadvantages of not applying SOLID principles to your project with examples.
+Without applying SOLID principle, fixing bugs would be a pain in the head. Especially when you are not the one fixing your own bugs. For example, if someone wanted to fix your bug, and found out you didn't apply SRP, the person fixing your bug would need to look into your code more needed than necessary.
+Without applying SOLID principle, changing a part of your code might break a lot of things. Without applying SOLID would also makes the entire code a lot harder to read.
 </details>
