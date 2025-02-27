@@ -17,6 +17,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/car")
 public class CarController {
+
+    @Autowired
     private final CarService carService;
 
     @Autowired
@@ -26,43 +28,42 @@ public class CarController {
 
     @GetMapping("/createCar")
     public String createCarPage(Model model) {
-        model.addAttribute("car", new Car());
+        Car car = new Car();
+        model.addAttribute("car", car);
         return "CreateCar";
     }
 
     @PostMapping("/createCar")
-    public String createCarPost(@ModelAttribute Car car) {
+    public String createCarPost(@ModelAttribute("product") Car car, Model model) {
         carService.create(car);
-        return "redirect:/car/listCar";
+        return "redirect:listCar";
     }
 
     @GetMapping("/listCar")
     public String carListPage(Model model) {
-        List<Car> cars = carService.findAll();
-        model.addAttribute("cars", cars);
+        List<Car> allCars = carService.findAll();
+        model.addAttribute("cars", allCars);
         return "CarList";
     }
 
-    @GetMapping("/editCar/{carId}")
+    @GetMapping(value="/editCar/{carId}")
     public String editCarPage(@PathVariable String carId, Model model) {
         Car car = carService.findById(carId);
-        if (car != null) {
-            model.addAttribute("car", car);
-            return "EditCar";
-        } else {
-            return "redirect:/car/listCar";
-        }
+        model.addAttribute("car", car);
+        return "EditCar";
     }
 
     @PostMapping("/editCar")
-    public String editCarPost(@ModelAttribute Car car) {
+    public String editCarPost(@ModelAttribute Car car, Model model) {
+        System.out.println(car.getCarId());
         carService.update(car.getCarId(), car);
-        return "redirect:/car/listCar";
+        return "redirect:listCar";
     }
 
     @PostMapping("/deleteCar")
-    public String deleteCar(@RequestParam String carId) {
+    public String deleteCar(@RequestParam("carId") String carId) {
         carService.deleteCarById(carId);
-        return "redirect:/car/listCar";
+        return "redirect:listCar";
     }
+
 }

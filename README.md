@@ -169,7 +169,7 @@ When creating a new functional test suite to verify the number of items in the p
 By centralizing shared logic and adopting reusable patterns, the new test suite can remain clean, modular, and professional.
 </details>
 
-<details open>
+<details>
 <summary>Module 2</summary>
 
 ### 1. List the code quality issue(s) that you fixed during the exercise and explain your strategy on fixing them.
@@ -178,4 +178,14 @@ PMD detected an unused import which was `org.springframework.web.bind.annotation
 ### 2. Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!
 The current CI/CD implementation partially meets the definition of Continuous Integration (CI) and Continuous Deployment (CD). The `ci.yml` workflow automates testing on every push and pull request, ensuring code changes are validated through unit tests, which aligns with CI principles. However, while the Dockerfile prepares the application for deployment by building and packaging it into a containerized environment, there is no explicit pipeline or automation for deploying the application to production or staging environments, which is essential for true CD. Additionally, workflows like `pmd.yml` and `scorecard.yml` focus on code quality and security but do not contribute directly to deployment automation.
 
+</details>
+
+<details open>
+<summary>Module 3</summary>
+
+### 1. Explain what principles you apply to your project!
+- Single Responsibility Principle: I split `ProductController` with `CarController`. Now they both are their own classes without one extends the other.
+- Open Closed Principle: I can add more functions into classes like `ProductRepository` or `ProductController` without modifying other functions.
+- Liskov Substitution Principle: `CarServiceImpl` and `ProductServiceImpl` both implements all methods in `CarService` or `ProductService` respectively.
+- Interface Segregation Principle: 
 </details>
