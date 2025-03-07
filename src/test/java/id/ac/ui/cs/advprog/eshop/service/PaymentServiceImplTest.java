@@ -240,4 +240,34 @@ class PaymentServiceImplTest {
         verify(paymentRepository, times(1)).save(any(Payment.class));
     }
 
+    @Test
+    void testAddPayment_CashOnDelivery_Success() {
+        paymentData.put("address", "123 Street");
+        paymentData.put("deliveryFee", "5000");
+
+        when(paymentRepository.save(any(Payment.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0)); // Ini memungkinkan perubahan status berlaku
+
+        Payment result = paymentService.addPayment(order, "CASH_ON_DELIVERY", paymentData);
+
+        assertNotNull(result);
+        assertEquals("CASH_ON_DELIVERY", result.getMethod());
+        assertEquals(PaymentStatus.SUCCESS.getValue(), result.getStatus()); // Seharusnya berhasil
+        verify(paymentRepository, times(1)).save(any(Payment.class));
+    }
+
+    @Test
+    void testAddPayment_CashOnDelivery_Rejected() {
+        paymentData.put("address", ""); // Alamat kosong
+        paymentData.put("deliveryFee", "5000");
+
+        when(paymentRepository.save(any(Payment.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Payment result = paymentService.addPayment(order, "CASH_ON_DELIVERY", paymentData);
+
+        assertNotNull(result);
+        assertEquals(PaymentStatus.REJECTED.getValue(), result.getStatus()); // Seharusnya ditolak
+        verify(paymentRepository, times(1)).save(any(Payment.class));
+    }
 }
