@@ -17,7 +17,7 @@ class PaymentRepositoryTest {
 
     private String id;
     private String method;
-    private PaymentStatus status;
+    private String status;
     private Map<String, String> paymentData;
 
     @BeforeEach
@@ -25,10 +25,9 @@ class PaymentRepositoryTest {
         paymentRepository = new PaymentRepository();
         id = "PAY123";
         method = "Voucher Code";
-        status = PaymentStatus.PENDING;
+        status = PaymentStatus.PENDING.getValue();
         paymentData = Map.of("voucherCode", "VOUCHER123");
     }
-
 
     @Test
     void testSavePayment() {
@@ -45,7 +44,7 @@ class PaymentRepositoryTest {
         Payment payment = new Payment(id, method, status, paymentData);
         paymentRepository.save(payment);
 
-        Optional<Payment> foundPayment = paymentRepository.findById(id);
+        Optional<Payment> foundPayment = Optional.ofNullable(paymentRepository.findById(id));
 
         assertTrue(foundPayment.isPresent());
         assertEquals(payment, foundPayment.get());
@@ -53,8 +52,8 @@ class PaymentRepositoryTest {
 
     @Test
     void testFindAll() {
-        Payment payment1 = new Payment("PAY123", "Voucher Code", PaymentStatus.PENDING, Map.of("voucherCode", "VOUCHER123"));
-        Payment payment2 = new Payment("PAY456", "Cash on Delivery", PaymentStatus.SUCCESS, Map.of("deliveryAddress", "123 Main St"));
+        Payment payment1 = new Payment("PAY123", "Voucher Code", PaymentStatus.PENDING.getValue(), Map.of("voucherCode", "VOUCHER123"));
+        Payment payment2 = new Payment("PAY456", "Cash on Delivery", PaymentStatus.SUCCESS.getValue(), Map.of("deliveryAddress", "123 Main St"));
 
         paymentRepository.save(payment1);
         paymentRepository.save(payment2);
@@ -68,16 +67,16 @@ class PaymentRepositoryTest {
 
     @Test
     void testUpdatePayment() {
-        Payment payment = new Payment(id, method, PaymentStatus.PENDING, paymentData);
+        Payment payment = new Payment(id, method, PaymentStatus.PENDING.getValue(), paymentData);
         paymentRepository.save(payment);
 
-        Payment updatedPayment = new Payment(id, method, PaymentStatus.SUCCESS, paymentData);
+        Payment updatedPayment = new Payment(id, method, PaymentStatus.SUCCESS.getValue(), paymentData);
         paymentRepository.save(updatedPayment);
 
-        Optional<Payment> foundPayment = paymentRepository.findById(id);
+        Optional<Payment> foundPayment = Optional.ofNullable(paymentRepository.findById(id));
 
         assertTrue(foundPayment.isPresent());
-        assertEquals(PaymentStatus.SUCCESS, foundPayment.get().getStatus());
+        assertEquals(PaymentStatus.SUCCESS.getValue(), foundPayment.get().getStatus());
     }
 
 
@@ -94,7 +93,7 @@ class PaymentRepositoryTest {
 
     @Test
     void testFindByIdNotFound() {
-        Optional<Payment> foundPayment = paymentRepository.findById("NON_EXISTENT_ID");
+        Optional<Payment> foundPayment = Optional.ofNullable(paymentRepository.findById("NON_EXISTENT_ID"));
 
         assertFalse(foundPayment.isPresent());
     }
@@ -108,7 +107,7 @@ class PaymentRepositoryTest {
 
     @Test
     void testUpdateNonExistentPayment() {
-        Payment updatedPayment = new Payment("NON_EXISTENT_ID", method, PaymentStatus.SUCCESS, paymentData);
+        Payment updatedPayment = new Payment("NON_EXISTENT_ID", method, PaymentStatus.SUCCESS.getValue(), paymentData);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             paymentRepository.save(updatedPayment);
