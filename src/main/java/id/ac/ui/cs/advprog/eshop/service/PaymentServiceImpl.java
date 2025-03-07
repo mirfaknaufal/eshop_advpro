@@ -37,7 +37,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         if ("VOUCHER".equalsIgnoreCase(method)) {
             String voucherCode = paymentData.get("voucherCode");
-            if (voucherCode != null && voucherCode.length() == 16 && voucherCode.startsWith("ESHOP") && voucherCode.replaceAll("[^0-9]", "").length() == 8 ) {
+            if (voucherCode != null && voucherCode.length() == 16 && voucherCode.startsWith("ESHOP") && voucherCode.replaceAll("[^0-9]", "").length() == 8) {
                 status = PaymentStatus.SUCCESS.getValue();
                 order.setStatus("SUCCESS");
             } else {
@@ -45,6 +45,15 @@ public class PaymentServiceImpl implements PaymentService {
                 order.setStatus("FAILED");
             }
             orderRepository.save(order);
+        } else if ("CASH_ON_DELIVERY".equalsIgnoreCase(method)) {
+            String address = paymentData.get("address");
+            String deliveryFee = paymentData.get("deliveryFee");
+
+            if (address == null || address.isEmpty() || deliveryFee == null || deliveryFee.isEmpty()) {
+                status = PaymentStatus.REJECTED.getValue();
+            } else {
+                status = PaymentStatus.SUCCESS.getValue();
+            }
         }
 
         Payment payment = new Payment(paymentId, method, status, paymentData);
