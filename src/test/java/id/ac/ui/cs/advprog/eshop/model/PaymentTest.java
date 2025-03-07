@@ -74,14 +74,6 @@ class PaymentTest {
         assertEquals("Method cannot be null or empty", exception.getMessage());
     }
 
-    @Test
-    void testInvalidStatus() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Payment(id, method, null, paymentData);
-        });
-
-        assertEquals("Status cannot be null or empty", exception.getMessage());
-    }
 
     @Test
     void testInvalidPaymentData() {
@@ -119,7 +111,7 @@ class PaymentTest {
 
     @Test
     void testEmptyStatusDefaultsToPending() {
-        Payment payment = new Payment(id, method, "", paymentData);
+        Payment payment = new Payment(id, method, paymentData);
 
         assertEquals("PENDING", payment.getStatus());
     }
