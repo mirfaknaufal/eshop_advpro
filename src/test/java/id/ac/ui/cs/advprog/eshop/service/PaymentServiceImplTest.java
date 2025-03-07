@@ -12,10 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -42,10 +39,10 @@ class PaymentServiceImplTest {
         MockitoAnnotations.openMocks(this);
         orderId = "ORDER123";
         paymentId = "PAY123";
-        method = "Voucher Code";
+        method = "VOUCHER";
 
         paymentData = new HashMap<>();
-        paymentData.put("voucherCode", "VOUCHER123");
+        paymentData.put("voucherCode", "ESHOP1234ABC5678");
         paymentData.put("orderId", orderId);
 
         order = spy(new Order(orderId));
@@ -210,6 +207,37 @@ class PaymentServiceImplTest {
 
         assertEquals("Status cannot be null or empty", exception.getMessage());
         verify(paymentRepository, never()).save(any(Payment.class));
+    }
+
+    @Test
+    void testVoucherPayment_Success() {
+        when(order.getId()).thenReturn(UUID.randomUUID().toString());
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Payment payment = paymentService.addPayment(order, method, paymentData);
+
+        assertNotNull(payment);
+        assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
+
+        verify(order).setStatus("SUCCESS");
+        verify(orderRepository, times(1)).save(order);
+        verify(paymentRepository, times(1)).save(any(Payment.class));
+    }
+
+    @Test
+    void testVoucherPayment_Rejected() {
+        paymentData.put("voucherCode", "INVALID12345678");
+        when(order.getId()).thenReturn(UUID.randomUUID().toString());
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Payment payment = paymentService.addPayment(order, method, paymentData);
+
+        assertNotNull(payment);
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
+
+        verify(order).setStatus("FAILED");
+        verify(orderRepository, times(1)).save(order);
+        verify(paymentRepository, times(1)).save(any(Payment.class));
     }
 
 }
