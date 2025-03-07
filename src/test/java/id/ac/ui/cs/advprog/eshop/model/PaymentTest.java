@@ -16,7 +16,7 @@ class PaymentTest {
     void setUp() {
         id = "PAY123";
         method = "Voucher Code";
-        status = "Pending";
+        status = "PENDING";
         paymentData = Map.of("voucherCode", "VOUCHER123");
     }
 
@@ -51,9 +51,9 @@ class PaymentTest {
     @Test
     void testValidStatusUpdate() {
         Payment payment = new Payment(id, method, status, paymentData);
-        payment.setStatus("Completed");
+        payment.setStatus("SUCCESS");
 
-        assertEquals("Completed", payment.getStatus());
+        assertEquals("SUCCESS", payment.getStatus());
     }
 
     @Test
@@ -108,5 +108,19 @@ class PaymentTest {
         });
 
         assertEquals("Delivery address is required for Cash on Delivery", exception.getMessage());
+    }
+
+    @Test
+    void testInvalidStatusDefaultsToPending() {
+        Payment payment = new Payment(id, method, null, paymentData);
+
+        assertEquals("PENDING", payment.getStatus());
+    }
+
+    @Test
+    void testEmptyStatusDefaultsToPending() {
+        Payment payment = new Payment(id, method, "", paymentData);
+
+        assertEquals("PENDING", payment.getStatus());
     }
 }
