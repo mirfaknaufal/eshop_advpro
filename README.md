@@ -180,7 +180,7 @@ The current CI/CD implementation partially meets the definition of Continuous In
 
 </details>
 
-<details open>
+<details>
 <summary>Module 3</summary>
 
 ### 1. Explain what principles you apply to your project!
@@ -197,4 +197,13 @@ With SOLID principle, improves robustness of my program. Adhering to SOLID princ
 ### 3. Explain the disadvantages of not applying SOLID principles to your project with examples.
 Without applying SOLID principle, fixing bugs would be a pain in the head. Especially when you are not the one fixing your own bugs. For example, if someone wanted to fix your bug, and found out you didn't apply SRP, the person fixing your bug would need to look into your code more needed than necessary.
 Without applying SOLID principle, changing a part of your code might break a lot of things. Without applying SOLID would also makes the entire code a lot harder to read.
+</details>
+
+<details open>
+<summary>Module 4</summary>
+
+### 1. The TDD flow has been useful in guiding the development process and ensuring modularity in the code. It helped identify issues early, such as incorrect mock interactions or missing validations. However, improvements can be made by adding more edge-case tests, refactoring repetitive setup code into reusable methods, and ensuring better separation of concerns to avoid tight coupling between layers. These steps will make the testing process more robust and maintainable in future projects.
+
+### 2. The tests largely adhere to the F.I.R.S.T. principles but have room for improvement. They are fast due to the use of mocks, independent with no shared state, repeatable since they don’t rely on external systems, and self-validating through clear assertions. However, enhancements like adding descriptive error messages, ensuring complete independence, and optimizing performance for larger test suites would further strengthen adherence to these principles. Additionally, maintaining timeliness by writing tests concurrently with development ensures alignment with TDD practices.
+
 </details>
