@@ -14,7 +14,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,6 +33,7 @@ class PaymentServiceImplTest {
     private String paymentId;
     private String method;
     private Map<String, String> paymentData;
+    private Order order;
 
     @BeforeEach
     void setUp() {
@@ -41,7 +41,11 @@ class PaymentServiceImplTest {
         orderId = "ORDER123";
         paymentId = "PAY123";
         method = "Voucher Code";
-        paymentData = Map.of("voucherCode", "VOUCHER123", "orderId", orderId);
+        paymentData = Map.of("voucherCode", "VOUCHER123");
+
+        // Create a mock Order object
+        order = mock(Order.class);
+        when(order.getId()).thenReturn(orderId);
     }
 
     @Test
@@ -50,7 +54,7 @@ class PaymentServiceImplTest {
 
         when(paymentRepository.save(any(Payment.class))).thenReturn(expectedPayment);
 
-        Payment actualPayment = paymentService.addPayment(orderId, method, paymentData);
+        Payment actualPayment = paymentService.addPayment(order, method, paymentData);
 
         assertNotNull(actualPayment);
         assertEquals(paymentId, actualPayment.getId());
@@ -62,19 +66,19 @@ class PaymentServiceImplTest {
     }
 
     @Test
-    void testAddPaymentUnhappyPath_NullOrderId() {
+    void testAddPaymentUnhappyPath_NullOrder() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             paymentService.addPayment(null, method, paymentData);
         });
 
-        assertEquals("Order ID cannot be null or empty", exception.getMessage());
+        assertEquals("Order cannot be null", exception.getMessage());
         verify(paymentRepository, never()).save(any(Payment.class));
     }
 
     @Test
     void testAddPaymentUnhappyPath_NullMethod() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            paymentService.addPayment(orderId, null, paymentData);
+            paymentService.addPayment(order, null, paymentData);
         });
 
         assertEquals("Payment method cannot be null or empty", exception.getMessage());
@@ -84,10 +88,9 @@ class PaymentServiceImplTest {
     @Test
     void testSetStatusToSuccessHappyPath() {
         Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
-        Order order = mock(Order.class);
 
         when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderRepository.findById(orderId)).thenReturn(order);
 
         Payment updatedPayment = paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue());
 
@@ -102,10 +105,9 @@ class PaymentServiceImplTest {
     @Test
     void testSetStatusToRejectedHappyPath() {
         Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
-        Order order = mock(Order.class);
 
         when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderRepository.findById(orderId)).thenReturn(order);
 
         Payment updatedPayment = paymentService.setStatus(payment, PaymentStatus.REJECTED.getValue());
 
@@ -133,7 +135,7 @@ class PaymentServiceImplTest {
     void testSetStatusUnhappyPath_OrderNotFound() {
         Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
 
-        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+        when(orderRepository.findById(orderId)).thenReturn(null);
 
         Payment updatedPayment = paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue());
 
