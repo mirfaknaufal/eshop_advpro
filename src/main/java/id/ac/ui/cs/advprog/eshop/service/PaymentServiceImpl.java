@@ -31,44 +31,51 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         String paymentId = UUID.randomUUID().toString();
-
         paymentData.put("orderId", order.getId());
 
-        Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
+        String status = PaymentStatus.PENDING.getValue();
 
+        if ("VOUCHER".equalsIgnoreCase(method)) {
+            String voucherCode = paymentData.get("voucherCode");
+            if (voucherCode != null && voucherCode.length() == 16 && voucherCode.startsWith("ESHOP") && voucherCode.replaceAll("[^0-9]", "").length() == 8 ) {
+                status = PaymentStatus.SUCCESS.getValue();
+                order.setStatus("SUCCESS");
+            } else {
+                status = PaymentStatus.REJECTED.getValue();
+                order.setStatus("FAILED");
+            }
+            orderRepository.save(order);
+        }
+
+        Payment payment = new Payment(paymentId, method, status, paymentData);
         return paymentRepository.save(payment);
     }
 
     @Override
     public Payment setStatus(Payment payment, String status) {
-
         if (payment == null) {
             throw new IllegalArgumentException("Payment cannot be null");
         }
         if (status == null || status.isEmpty()) {
             throw new IllegalArgumentException("Status cannot be null or empty");
         }
-
         if (!PaymentStatus.SUCCESS.getValue().equals(status) && !PaymentStatus.REJECTED.getValue().equals(status)) {
             throw new IllegalArgumentException("Invalid payment status");
         }
 
         payment.setStatus(status);
-
         String orderId = payment.getPaymentData().get("orderId");
-
         if (orderId != null && !orderId.isEmpty()) {
             Order order = orderRepository.findById(orderId);
             if (order != null) {
                 if (PaymentStatus.SUCCESS.getValue().equals(status)) {
                     order.setStatus("SUCCESS");
-                } else if (PaymentStatus.REJECTED.getValue().equals(status)) {
+                } else {
                     order.setStatus("FAILED");
                 }
                 orderRepository.save(order);
             }
         }
-
         return paymentRepository.save(payment);
     }
 
