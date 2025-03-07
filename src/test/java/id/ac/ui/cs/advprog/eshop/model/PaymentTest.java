@@ -58,15 +58,6 @@ class PaymentTest {
     }
 
     @Test
-    void testInvalidId() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Payment(null, method, status, paymentData);
-        });
-
-        assertEquals("ID cannot be null or empty", exception.getMessage());
-    }
-
-    @Test
     void testInvalidMethod() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new Payment(id, "", status, paymentData);

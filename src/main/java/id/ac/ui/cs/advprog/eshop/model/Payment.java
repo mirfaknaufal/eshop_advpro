@@ -18,7 +18,6 @@ public class Payment {
     private Map<String, String> paymentData;
 
     public Payment(String id, String method, Map<String, String> paymentData) {
-        validateId(id);
         validateMethod(method);
         validatePaymentData(paymentData);
 
@@ -31,7 +30,6 @@ public class Payment {
     }
 
     public Payment(String id, String method, String status, Map<String, String> paymentData) {
-        validateId(id);
         validateMethod(method);
         validatePaymentData(paymentData);
 

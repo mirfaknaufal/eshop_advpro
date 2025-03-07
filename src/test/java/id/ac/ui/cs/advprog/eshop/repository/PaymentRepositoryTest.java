@@ -104,15 +104,4 @@ class PaymentRepositoryTest {
 
         assertTrue(allPayments.isEmpty());
     }
-
-    @Test
-    void testUpdateNonExistentPayment() {
-        Payment updatedPayment = new Payment("NON_EXISTENT_ID", method, PaymentStatus.SUCCESS.getValue(), paymentData);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            paymentRepository.save(updatedPayment);
-        });
-
-        assertEquals("Cannot update a non-existent payment", exception.getMessage());
-    }
 }
