@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
 import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
 import id.ac.ui.cs.advprog.eshop.repository.OrderRepository;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,11 +43,13 @@ class PaymentServiceImplTest {
         orderId = "ORDER123";
         paymentId = "PAY123";
         method = "Voucher Code";
-        paymentData = Map.of("voucherCode", "VOUCHER123");
 
-        // Create a mock Order object
-        order = mock(Order.class);
-        when(order.getId()).thenReturn(orderId);
+        paymentData = new HashMap<>();
+        paymentData.put("voucherCode", "VOUCHER123");
+        paymentData.put("orderId", orderId);
+
+        order = spy(new Order(orderId));
+        when(orderRepository.findById(orderId)).thenReturn(order);
     }
 
     @Test
@@ -85,39 +89,6 @@ class PaymentServiceImplTest {
         verify(paymentRepository, never()).save(any(Payment.class));
     }
 
-    @Test
-    void testSetStatusToSuccessHappyPath() {
-        Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
-
-        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
-        when(orderRepository.findById(orderId)).thenReturn(order);
-
-        Payment updatedPayment = paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue());
-
-        assertNotNull(updatedPayment);
-        assertEquals(PaymentStatus.SUCCESS.getValue(), updatedPayment.getStatus());
-
-        verify(order).setStatus("SUCCESS");
-        verify(orderRepository, times(1)).save(order);
-        verify(paymentRepository, times(1)).save(any(Payment.class));
-    }
-
-    @Test
-    void testSetStatusToRejectedHappyPath() {
-        Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
-
-        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
-        when(orderRepository.findById(orderId)).thenReturn(order);
-
-        Payment updatedPayment = paymentService.setStatus(payment, PaymentStatus.REJECTED.getValue());
-
-        assertNotNull(updatedPayment);
-        assertEquals(PaymentStatus.REJECTED.getValue(), updatedPayment.getStatus());
-
-        verify(order).setStatus("FAILED");
-        verify(orderRepository, times(1)).save(order);
-        verify(paymentRepository, times(1)).save(any(Payment.class));
-    }
 
     @Test
     void testSetStatusUnhappyPath_InvalidStatus() {
@@ -131,20 +102,6 @@ class PaymentServiceImplTest {
         verify(paymentRepository, never()).save(any(Payment.class));
     }
 
-    @Test
-    void testSetStatusUnhappyPath_OrderNotFound() {
-        Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
-
-        when(orderRepository.findById(orderId)).thenReturn(null);
-
-        Payment updatedPayment = paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue());
-
-        assertNotNull(updatedPayment);
-        assertEquals(PaymentStatus.SUCCESS.getValue(), updatedPayment.getStatus());
-
-        verify(orderRepository, times(1)).findById(orderId);
-        verify(paymentRepository, times(1)).save(any(Payment.class));
-    }
 
     @Test
     void testGetPaymentHappyPath() {
@@ -202,4 +159,57 @@ class PaymentServiceImplTest {
 
         verify(paymentRepository, times(1)).findAll();
     }
+
+    @Test
+    void testSetStatusHappyPath_Success() {
+        Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
+
+        Payment updatedPayment = paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue());
+
+        assertNotNull(updatedPayment);
+        assertEquals(PaymentStatus.SUCCESS.getValue(), updatedPayment.getStatus());
+
+        verify(order).setStatus(OrderStatus.SUCCESS.getValue());
+        verify(orderRepository, times(1)).save(order);
+        verify(paymentRepository, times(1)).save(any(Payment.class));
+    }
+
+    @Test
+    void testSetStatusHappyPath_Rejected() {
+        Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
+
+        Payment updatedPayment = paymentService.setStatus(payment, PaymentStatus.REJECTED.getValue());
+
+        assertNotNull(updatedPayment);
+        assertEquals(PaymentStatus.REJECTED.getValue(), updatedPayment.getStatus());
+
+        verify(order).setStatus(OrderStatus.FAILED.getValue());
+        verify(orderRepository, times(1)).save(order);
+        verify(paymentRepository, times(1)).save(any(Payment.class));
+    }
+
+    @Test
+    void testSetStatusUnhappyPath_NullPayment() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            paymentService.setStatus(null, PaymentStatus.SUCCESS.getValue());
+        });
+
+        assertEquals("Payment cannot be null", exception.getMessage());
+        verify(paymentRepository, never()).save(any(Payment.class));
+    }
+
+    @Test
+    void testSetStatusUnhappyPath_NullStatus() {
+        Payment payment = new Payment(paymentId, method, PaymentStatus.PENDING.getValue(), paymentData);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            paymentService.setStatus(payment, null);
+        });
+
+        assertEquals("Status cannot be null or empty", exception.getMessage());
+        verify(paymentRepository, never()).save(any(Payment.class));
+    }
+
 }

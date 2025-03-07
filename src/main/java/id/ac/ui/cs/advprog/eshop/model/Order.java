@@ -32,6 +32,10 @@ public class Order {
         this.setStatus(status);
     }
 
+    public Order(String orderId) {
+        this.id = orderId;
+    }
+
     public void setStatus (String status) {
         if (OrderStatus.contains(status)) {
             this.status = status;

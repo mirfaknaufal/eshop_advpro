@@ -41,11 +41,6 @@ public class Payment {
         validatePaymentDataForMethod(method, paymentData);
     }
 
-    private void validateId(String id) {
-        if (id == null || id.isEmpty()) {
-            throw new IllegalArgumentException("ID cannot be null or empty");
-        }
-    }
 
     private void validateMethod(String method) {
         if (method == null || method.isEmpty()) {
