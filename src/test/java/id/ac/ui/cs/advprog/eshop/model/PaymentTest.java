@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.Map;
@@ -16,7 +17,7 @@ class PaymentTest {
     void setUp() {
         id = "PAY123";
         method = "Voucher Code";
-        status = "PENDING";
+        status = PaymentStatus.PENDING.getValue();
         paymentData = Map.of("voucherCode", "VOUCHER123");
     }
 
@@ -41,7 +42,7 @@ class PaymentTest {
 
     @Test
     void testValidCashOnDeliverySubFeature() {
-        Payment payment = new Payment("PAY456", "Cash on Delivery", "Pending", Map.of("deliveryAddress", "123 Main St"));
+        Payment payment = new Payment("PAY456", "Cash on Delivery", PaymentStatus.PENDING.getValue(), Map.of("deliveryAddress", "123 Main St"));
 
         assertEquals("Cash on Delivery", payment.getMethod());
         assertTrue(payment.getPaymentData().containsKey("deliveryAddress"));
