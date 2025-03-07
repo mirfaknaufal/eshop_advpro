@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,7 @@ public class Payment {
 
         this.id = id;
         this.method = method;
-        this.status = "PENDING";
+        this.status = PaymentStatus.PENDING.getValue();
         this.paymentData = paymentData;
 
         validatePaymentDataForMethod(method, paymentData);
@@ -36,7 +37,7 @@ public class Payment {
 
         this.id = id;
         this.method = method;
-        this.status = (status == null || status.trim().isEmpty()) ? "PENDING" : status;
+        this.status = (status == null || status.trim().isEmpty()) ? PaymentStatus.PENDING.getValue() : status;
         this.paymentData = paymentData;
 
         validatePaymentDataForMethod(method, paymentData);
